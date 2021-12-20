@@ -3,11 +3,22 @@ import TodoForm from "./TodoForm"
 import { MdDeleteForever } from "react-icons/md"
 import { FiEdit } from "react-icons/fi"
 
-function Todo({ todos, completeTodo }) {
+function Todo({ todos, completeTodo, removeTodo, updateTodo }) {
   const [edit, setEdit] = useState({
     id: null,
     value: "",
   })
+
+  const submitUpdate = (value) => {
+    updateTodo(edit.id, value)
+    setEdit({
+      id: null,
+      value: "",
+    })
+  }
+  if (edit.id) {
+    return <TodoForm edit={edit} onSubmit={submitUpdate} />
+  }
 
   return todos.map((todo, index) => (
     <div className={todo.isComplete ? "todo-row complete" : "todo-row"} key={index}>
@@ -16,8 +27,8 @@ function Todo({ todos, completeTodo }) {
       </div>
 
       <div className="icons">
-        <FiEdit />
-        <MdDeleteForever />
+        <FiEdit onClick={() => setEdit({ id: todo.id, value: todo.text })} className="edit-icon" />
+        <MdDeleteForever onClick={() => removeTodo(todo.id)} className="delete-icon" />
       </div>
     </div>
   ))
